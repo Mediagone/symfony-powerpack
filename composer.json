@@ -1,0 +1,32 @@
+{
+    "name": "mediagone/symfony-powerpack",
+    "type": "library",
+    "description": "Provides efficiency and code-quality helpers for Symfony.",
+    "keywords": ["symfony"],
+    "license": "MIT",
+    "authors": [
+        {"name": "Bruce Suire"}
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mediagone\\Symfony\\PowerPack\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Mediagone\\Symfony\\PowerPack\\": "tests/"
+        }
+    },
+    "scripts": {
+        "tests": "phpunit -c phpunit.xml.dist --testsuite Unit_Tests"
+    }
+  }
