@@ -2,38 +2,24 @@
 
 namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
 
 
-final class StringArrayParamConverter implements ParamConverterInterface
+final class StringArrayParamConverter extends ValueParamConverter
 {
     //========================================================================================================
-    // Methods
+    // Constructor
     //========================================================================================================
     
-    public function supports(ParamConverter $configuration) : bool
+    public function __construct()
     {
-        return $configuration->getClass() === StringArrayParam::class;
-    }
-    
-    
-    public function apply(Request $request, ParamConverter $configuration)
-    {
-        $paramName = $configuration->getName();
-        $param = null;
+        $handlers = [
+            '' => static function(string $value) {
+                return StringArrayParam::fromComaSeparatedStrings($value);
+            },
+        ];
         
-        if ($request->get($paramName) !== null) {
-            $param = StringArrayParam::fromComaSeparatedStrings($request->get($paramName));
-        }
-        
-        if ($param === null && $configuration->isOptional() === false) {
-            throw new NotFoundHttpException('StringArrayParam parameter is mandatory.');
-        }
-        
-        $request->attributes->set($configuration->getName(), $param);
+        parent::__construct(StringArrayParam::class, $handlers);
     }
     
     
