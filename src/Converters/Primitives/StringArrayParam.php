@@ -7,7 +7,7 @@ use function explode;
 use function in_array;
 
 
-final class ArrayParam implements JsonSerializable
+final class StringArrayParam implements JsonSerializable
 {
     //========================================================================================================
     // Properties

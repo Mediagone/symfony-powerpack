@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-final class ArrayParamConverter implements ParamConverterInterface
+final class StringArrayParamConverter implements ParamConverterInterface
 {
     //========================================================================================================
     // Methods
@@ -16,7 +16,7 @@ final class ArrayParamConverter implements ParamConverterInterface
     
     public function supports(ParamConverter $configuration) : bool
     {
-        return $configuration->getClass() === ArrayParam::class;
+        return $configuration->getClass() === StringArrayParam::class;
     }
     
     
@@ -26,11 +26,11 @@ final class ArrayParamConverter implements ParamConverterInterface
         $param = null;
         
         if ($request->get($paramName) !== null) {
-            $param = ArrayParam::fromComaSeparatedStrings($request->get($paramName));
+            $param = StringArrayParam::fromComaSeparatedStrings($request->get($paramName));
         }
         
         if ($param === null && $configuration->isOptional() === false) {
-            throw new NotFoundHttpException('ArrayParam parameter is mandatory.');
+            throw new NotFoundHttpException('StringArrayParam parameter is mandatory.');
         }
         
         $request->attributes->set($configuration->getName(), $param);

@@ -2,8 +2,8 @@
 
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
-use Mediagone\Symfony\PowerPack\Converters\Primitives\ArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\ArrayParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\StringArrayParam;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\StringArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,17 +12,17 @@ use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
 /**
- * @covers ArrayParamConverter
+ * @covers StringArrayParamConverter
  */
-final class ArrayParamConverterTest extends TestCase
+final class StringArrayParamConverterTest extends TestCase
 {
-    public function test_only_supports_ArrayParam(): void
+    public function test_only_supports_StringArrayParam(): void
     {
-        $ArrayParam = new ParamConverter([], ArrayParam::class);
+        $strArrayParam = new ParamConverter([], StringArrayParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
         
-        self::assertTrue((new ArrayParamConverter())->supports($ArrayParam));
-        self::assertFalse((new ArrayParamConverter())->supports($fooParam));
+        self::assertTrue((new StringArrayParamConverter())->supports($strArrayParam));
+        self::assertFalse((new StringArrayParamConverter())->supports($fooParam));
     }
     
     
@@ -33,11 +33,11 @@ final class ArrayParamConverterTest extends TestCase
             [$paramName => '1,2,3'] // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], ArrayParam::class);
-        (new ArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
+        (new StringArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(ArrayParam::class, $convertedParam);
+        self::assertInstanceOf(StringArrayParam::class, $convertedParam);
         self::assertSame(['1','2','3'], $convertedParam->getValue());
     }
     
@@ -50,11 +50,11 @@ final class ArrayParamConverterTest extends TestCase
             [$paramName => '1,2,3'] // POST parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], ArrayParam::class);
-        (new ArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
+        (new StringArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(ArrayParam::class, $convertedParam);
+        self::assertInstanceOf(StringArrayParam::class, $convertedParam);
         self::assertSame(['1','2','3'], $convertedParam->getValue());
     }
     
@@ -68,11 +68,11 @@ final class ArrayParamConverterTest extends TestCase
             [$paramName => '1,2,3'] // Attributes
         );
         
-        $param = new ParamConverter(['name' => $paramName], ArrayParam::class);
-        (new ArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
+        (new StringArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(ArrayParam::class, $convertedParam);
+        self::assertInstanceOf(StringArrayParam::class, $convertedParam);
         self::assertSame(['1','2','3'], $convertedParam->getValue());
     }
     
@@ -82,8 +82,8 @@ final class ArrayParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], ArrayParam::class, [], true);
-        (new ArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], StringArrayParam::class, [], true);
+        (new StringArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);
@@ -95,10 +95,10 @@ final class ArrayParamConverterTest extends TestCase
         $request = new Request();
        
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], ArrayParam::class, []);
+        $param = new ParamConverter(['name' => $paramName], StringArrayParam::class, []);
        
         $this->expectException(NotFoundHttpException::class);
-        (new ArrayParamConverter())->apply($request, $param);
+        (new StringArrayParamConverter())->apply($request, $param);
     }
     
     
