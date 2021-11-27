@@ -16,7 +16,7 @@ use Tests\Mediagone\Symfony\PowerPack\FooParam;
  */
 final class StringParamConverterTest extends TestCase
 {
-    public function test_only_supports_stringparam(): void
+    public function test_only_supports_StringParam(): void
     {
         $strParam = new ParamConverter([], StringParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
@@ -33,8 +33,8 @@ final class StringParamConverterTest extends TestCase
             [$paramName => 'A GET string'] // GET parameters
         );
         
-        $barParam = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $barParam);
+        $param = new ParamConverter(['name' => $paramName], StringParam::class);
+        (new StringParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
@@ -50,8 +50,8 @@ final class StringParamConverterTest extends TestCase
             [$paramName => 'A POST string'] // POST parameters
         );
         
-        $barParam = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $barParam);
+        $param = new ParamConverter(['name' => $paramName], StringParam::class);
+        (new StringParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
@@ -68,8 +68,8 @@ final class StringParamConverterTest extends TestCase
             [$paramName => 'An attribute string'] // Attributes
         );
         
-        $barParam = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $barParam);
+        $param = new ParamConverter(['name' => $paramName], StringParam::class);
+        (new StringParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
@@ -82,8 +82,8 @@ final class StringParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $barParam = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
-        (new StringParamConverter())->apply($request, $barParam);
+        $param = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
+        (new StringParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);
@@ -95,10 +95,10 @@ final class StringParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $barParam = new ParamConverter(['name' => $paramName], StringParam::class, []);
+        $param = new ParamConverter(['name' => $paramName], StringParam::class, []);
         
         $this->expectException(NotFoundHttpException::class);
-        (new StringParamConverter())->apply($request, $barParam);
+        (new StringParamConverter())->apply($request, $param);
     }
     
     
@@ -109,8 +109,8 @@ final class StringParamConverterTest extends TestCase
     //         [$paramName.'Error' => '']
     //     );
     //    
-    //     $barParam = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
-    //     (new StringParamConverter())->apply($request, $barParam);
+    //     $param = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
+    //     (new StringParamConverter())->apply($request, $param);
     //    
     //     $convertedParam = $request->attributes->get($paramName);
     //     self::assertNull($convertedParam);

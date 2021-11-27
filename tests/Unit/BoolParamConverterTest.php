@@ -16,7 +16,7 @@ use Tests\Mediagone\Symfony\PowerPack\FooParam;
  */
 final class BoolParamConverterTest extends TestCase
 {
-    public function test_only_supports_boolparam(): void
+    public function test_only_supports_BoolParam(): void
     {
         $boolParam = new ParamConverter([], BoolParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
