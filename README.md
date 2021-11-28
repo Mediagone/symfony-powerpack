@@ -171,8 +171,8 @@ final class StringParamConverter extends ValueParamConverter
 You can also catch exceptions directly in the handler if you need to customize the return value.
 
 
-The only drawback of ParamConverters is that they only work with classes, so this package also provides a set of generic parameter classes that can be used in several situations: 
 ## <a name="primitiveParameters"></a>Primitive types parameters
+The only drawback of ParamConverters is they only work with classes but not with primitive PHP types (int, string, float...) so this package also provides a set of classes that can be used to enforce type-safety for primitive types.
 
 | Class name | Parameter value example | Converted PHP value |
 |:---|---|---|
@@ -182,7 +182,7 @@ The only drawback of ParamConverters is that they only work with classes, so thi
 | StringParam | `hello` | `'hello'` |
 | JsonParam | `["1","2","3"]` | `['1', '2', '3']` |
 
-It also provides *serialized arrays* parameters, built from comma-separated values string :
+It also provides parameters to extract serialized arrays from the query, built from comma-separated values string :
 
 | Class name | Parameter value example | Converted PHP value |
 |:---|---|---|
@@ -191,11 +191,13 @@ It also provides *serialized arrays* parameters, built from comma-separated valu
 | IntArrayParam | `1,2,3` | `[1, 2, 3]` |
 | StringArrayParam | `one,two,three` | `['one', 'two', 'three']` |
 
-Usage is similar, you only have to typehint an argument in your controller to get the value as an array:
+Again, you only have to typehint argument in your controller to get the request's values:
 ```php
-public function __invoke(BoolArrayParam $options): Response
+// request URL: /do-something?id=1&options=1,1,0
+
+public function __invoke(IntParam $id, BoolArrayParam $options): Response
 {
-    foreach ($options as $option) {
+    foreach ($options->getValue() as $option) {
         // ...
     }
 }
