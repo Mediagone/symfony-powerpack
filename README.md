@@ -111,7 +111,7 @@ final class StringParamConverter extends ValueParamConverter
     
 }
 ```
-This way, the converter will be able to fetch the user by Id if a `userId` parameter is supplied to the controller, or by its Name if the given parameter is `userName`. It also work the same for GET, POST or route's attributes.
+This way, the converter will be able to fetch the user by Id if an `userId` parameter is supplied to the controller, or by its Name if the given parameter is `userName`. It also work the same for GET, POST or route's attributes.
 
 In other words, the request parameter name is the concatenation of the *controller's argument name* and the *handler's array key*.
 ```php
@@ -140,7 +140,7 @@ You can disable this behavior by making the argument nullable and handle it by y
 public function __invoke(?User $user): Response
 {
     if ($user === null) {
-        ...
+        // ...
     }
 }
 ```
@@ -165,6 +165,37 @@ final class StringParamConverter extends ValueParamConverter
 }
 ```
 You can also catch exceptions directly in the handler if you need to customize the return value.
+
+
+## Generic parameters
+The only drawback of ParamConverters is that they only work with classes, so this package also provides a set of generic parameter classes that can be used in several situations: 
+
+| Class name | Parameter value example | Converted PHP value |
+|:---|---|---|
+| BoolParam | `1` or `0` | `true` or `false` |
+| FloatParam |`3.14159` | `3.14159` |
+| IntParam | `42` | `42` |
+| StringParam | `hello` | `'hello'` |
+| JsonParam | `["1","2","3"]` | `['1', '2', '3']` |
+
+It also provides *serialized arrays* parameters, built from comma-separated values string :
+
+| Class name | Parameter value example | Converted PHP value |
+|:---|---|---|
+| BoolArrayParam | `1,0,1`  | `[true, false, true]` |
+| FloatArrayParam | `1.1,2.2,3.3` | `[1.1, 2.2, 3.3]` |
+| IntArrayParam | `1,2,3` | `[1, 2, 3]` |
+| StringArrayParam | `one,two,three` | `['one', 'two', 'three']` |
+
+Usage is similar, you only have to typehint an argument in your controller to get the value as an array:
+```php
+public function __invoke(BoolArrayParam $options): Response
+{
+    foreach ($options as $option) {
+        // ...
+    }
+}
+```
 
 
 ## License
