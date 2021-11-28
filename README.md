@@ -5,6 +5,10 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Software License][ico-license]](LICENSE)
 
+This package provides code-quality features to Symfony:
+1. [Generic param converters](#paramConverters)
+2. [Primitive types parameters](#primitiveParameters)
+
 
 ## Installation
 This package requires **PHP 7.4+**
@@ -15,7 +19,7 @@ $ composer require mediagone/symfony-powerpack
 ```
 
 
-## Param Converters
+## <a name="paramConverters"></a>Generic param converter
 Param Converters are the best way to convert URL or route parameters into entity or Value Object instances. They allow to extract retrieval or conversion logic, preventing code duplication and keeping your controllers clean.
 
 *For more details, see [Symfony's documentation](https://symfony.com/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html).*
@@ -167,8 +171,8 @@ final class StringParamConverter extends ValueParamConverter
 You can also catch exceptions directly in the handler if you need to customize the return value.
 
 
-## Generic parameters
 The only drawback of ParamConverters is that they only work with classes, so this package also provides a set of generic parameter classes that can be used in several situations: 
+## <a name="primitiveParameters"></a>Primitive types parameters
 
 | Class name | Parameter value example | Converted PHP value |
 |:---|---|---|
