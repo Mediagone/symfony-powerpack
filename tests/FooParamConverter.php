@@ -10,7 +10,7 @@ final class FooParamConverter extends ValueParamConverter
 {
     public function __construct(bool $catchThrowable = true)
     {
-        $handlers = [
+        $resolvers = [
             'Id' => static function(string $value) {
                 return new FooParam($value.'_byId');
             },
@@ -22,6 +22,6 @@ final class FooParamConverter extends ValueParamConverter
             }
         ];
         
-        parent::__construct(FooParam::class, $handlers, $catchThrowable);
+        parent::__construct(FooParam::class, $resolvers, $catchThrowable);
     }
 }

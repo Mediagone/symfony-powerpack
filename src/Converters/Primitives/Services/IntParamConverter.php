@@ -14,13 +14,13 @@ final class IntParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return IntParam::fromInteger((int)$value);
             },
         ];
         
-        parent::__construct(IntParam::class, $handlers);
+        parent::__construct(IntParam::class, $resolvers);
     }
     
     

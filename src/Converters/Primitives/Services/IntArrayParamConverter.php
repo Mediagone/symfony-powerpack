@@ -14,13 +14,13 @@ final class IntArrayParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return IntArrayParam::fromComaSeparatedInts($value);
             },
         ];
         
-        parent::__construct(IntArrayParam::class, $handlers);
+        parent::__construct(IntArrayParam::class, $resolvers);
     }
     
     

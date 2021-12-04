@@ -18,7 +18,7 @@ abstract class ValueParamConverter implements ParamConverterInterface
     
     private string $className;
     
-    private array $handlers;
+    private array $resolvers;
     
     private bool $catchExceptions;
     
@@ -28,10 +28,10 @@ abstract class ValueParamConverter implements ParamConverterInterface
     // Constructor
     //========================================================================================================
     
-    protected function __construct(string $className, array $handlers, bool $catchThrowable = true)
+    protected function __construct(string $className, array $resolvers, bool $catchThrowable = true)
     {
         $this->className = $className;
-        $this->handlers = (static fn(callable ...$handlers) => $handlers)(...$handlers);
+        $this->resolvers = (static fn(callable ...$resolvers) => $resolvers)(...$resolvers);
         $this->catchExceptions = $catchThrowable;
     }
     
@@ -52,19 +52,19 @@ abstract class ValueParamConverter implements ParamConverterInterface
         $paramName = $configuration->getName();
         $param = null;
         
-        foreach ($this->handlers as $handlerKey => $handler) {
-            $requestParam = $request->get($paramName.$handlerKey);
+        foreach ($this->resolvers as $resolverKey => $resolver) {
+            $requestParam = $request->get($paramName.$resolverKey);
             
             if ($requestParam !== null) {
                 if ($this->catchExceptions) {
                     try {
-                        $param = $handler($requestParam);
+                        $param = $resolver($requestParam);
                     } catch (Throwable $ex) {
                         $param = null;
                     }
                 }
                 else {
-                    $param = $handler($requestParam);
+                    $param = $resolver($requestParam);
                 }
                 
                 if ($param !== null) {

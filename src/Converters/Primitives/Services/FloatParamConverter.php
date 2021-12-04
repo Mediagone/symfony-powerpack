@@ -14,13 +14,13 @@ final class FloatParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return FloatParam::fromFloat((float)$value);
             },
         ];
         
-        parent::__construct(FloatParam::class, $handlers);
+        parent::__construct(FloatParam::class, $resolvers);
     }
     
     

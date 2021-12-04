@@ -14,13 +14,13 @@ final class BoolArrayParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return BoolArrayParam::fromComaSeparatedBooleans($value);
             },
         ];
         
-        parent::__construct(BoolArrayParam::class, $handlers);
+        parent::__construct(BoolArrayParam::class, $resolvers);
     }
     
     

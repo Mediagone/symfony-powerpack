@@ -85,7 +85,7 @@ final class ValueParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_secondary_handler(): void
+    public function test_can_convert_from_secondary_resolver(): void
     {
         $paramName = 'foo';
         $request = new Request(

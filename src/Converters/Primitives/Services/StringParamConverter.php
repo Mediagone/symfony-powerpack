@@ -14,13 +14,13 @@ final class StringParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return StringParam::fromString($value);
             },
         ];
         
-        parent::__construct(StringParam::class, $handlers);
+        parent::__construct(StringParam::class, $resolvers);
     }
     
     

@@ -14,13 +14,13 @@ final class BoolParamConverter extends ValueParamConverter
     
     public function __construct()
     {
-        $handlers = [
+        $resolvers = [
             '' => static function(string $value) {
                 return BoolParam::fromInteger((int)$value);
             },
         ];
         
-        parent::__construct(BoolParam::class, $handlers);
+        parent::__construct(BoolParam::class, $resolvers);
     }
     
     
