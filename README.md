@@ -5,7 +5,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 [![Software License][ico-license]](LICENSE)
 
-This package provides code-quality features to Symfony:
+This package provides efficiency and code-quality helpers for Symfony:
 1. [Generic param converters](#paramConverters)
 2. [Primitive types parameters](#primitiveParameters)
 
@@ -15,11 +15,19 @@ This package requires **PHP 7.4+**
 
 Add it as Composer dependency:
 ```sh
-$ composer require mediagone/symfony-powerpack
+composer require mediagone/symfony-powerpack
+```
+
+In order to use primitive type parameters, you must register the converters in your `services.yaml` by adding the following service declaration:
+```yaml
+services:
+    
+    Mediagone\Symfony\PowerPack\Converters\Primitives\:
+        resource: '../vendor/mediagone/symfony-powerpack/src/Converters/Primitives/Services/'
 ```
 
 
-## <a name="paramConverters"></a>Generic param converter
+## <a name="paramConverters"></a>1) Generic param converter
 Param Converters are the best way to convert URL or route parameters into entity or Value Object instances. They allow to extract retrieval or conversion logic, preventing code duplication and keeping your controllers clean.
 
 *For more details, see [Symfony's documentation](https://symfony.com/bundles/SensioFrameworkExtraBundle/current/annotations/converters.html).*
@@ -115,9 +123,10 @@ final class StringParamConverter extends ValueParamConverter
     
 }
 ```
-This way, the converter will be able to fetch the user by Id if an `userId` parameter is supplied to the controller, or by its Name if the given parameter is `userName`. It also work the same for GET, POST or route's attributes.
+This way, the converter will be able to fetch the user by Id if an `userId` parameter is supplied to the controller, or by its Name if the given parameter is `userName`. In other words, the request parameter name is the concatenation of the *controller's argument name* and the *handler's array key*.
 
-In other words, the request parameter name is the concatenation of the *controller's argument name* and the *handler's array key*.
+Again, it works the same for GET, POST or route's attributes.
+
 ```php
 use App\Entity\User;
 use Symfony\Component\Routing\Annotation\Route;
@@ -125,7 +134,7 @@ use Symfony\Component\Routing\Annotation\Route;
 final class ShowUserController
 {
     /**
-     * @Route("/users/{userId}", name="app_users")
+     * @Route("/users/{userId}", name="app_user_show")
      */
     public function __invoke(User $user): Response
     {
@@ -171,7 +180,7 @@ final class StringParamConverter extends ValueParamConverter
 You can also catch exceptions directly in the handler if you need to customize the return value.
 
 
-## <a name="primitiveParameters"></a>Primitive types parameters
+## <a name="primitiveParameters"></a>2) Primitive types parameters
 The only drawback of ParamConverters is they only work with classes but not with primitive PHP types (int, string, float...) so this package also provides a set of classes that can be used to enforce type-safety for primitive types.
 
 | Class name | Parameter value example | Converted PHP value |
@@ -191,12 +200,13 @@ It also provides parameters to extract serialized arrays from the query, built f
 | IntArrayParam | `1,2,3` | `[1, 2, 3]` |
 | StringArrayParam | `one,two,three` | `['one', 'two', 'three']` |
 
-Again, you only have to typehint argument in your controller to get the request's values:
+Again, you only have to typehint arguments in your controller to get the request's values:
 ```php
-// request URL: /do-something?id=1&options=1,1,0
+// Request URL:  /do-something?data=23&options=1,1,0
 
-public function __invoke(IntParam $id, BoolArrayParam $options): Response
+public function __invoke(IntParam $data, BoolArrayParam $options): Response
 {
+    $data->getValue(); // 23
     foreach ($options->getValue() as $option) {
         // ...
     }
