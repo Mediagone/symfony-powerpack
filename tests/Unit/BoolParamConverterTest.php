@@ -3,7 +3,7 @@
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\BoolParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

@@ -2,8 +2,8 @@
 
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\StringArrayParamConverter;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\StringArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\StringArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

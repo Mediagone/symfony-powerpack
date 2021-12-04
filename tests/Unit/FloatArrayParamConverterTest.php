@@ -3,7 +3,7 @@
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\FloatArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\FloatArrayParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\FloatArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

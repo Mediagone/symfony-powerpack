@@ -3,7 +3,7 @@
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\IntArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\IntArrayParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\IntArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

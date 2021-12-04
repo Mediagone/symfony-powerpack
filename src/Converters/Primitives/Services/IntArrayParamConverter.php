@@ -1,11 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
+namespace Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
+use Mediagone\Symfony\PowerPack\Converters\Primitives\IntArrayParam;
 use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
 
 
-final class IntParamConverter extends ValueParamConverter
+final class IntArrayParamConverter extends ValueParamConverter
 {
     //========================================================================================================
     // Constructor
@@ -15,11 +16,11 @@ final class IntParamConverter extends ValueParamConverter
     {
         $handlers = [
             '' => static function(string $value) {
-                return IntParam::fromInteger((int)$value);
+                return IntArrayParam::fromComaSeparatedInts($value);
             },
         ];
         
-        parent::__construct(IntParam::class, $handlers);
+        parent::__construct(IntArrayParam::class, $handlers);
     }
     
     

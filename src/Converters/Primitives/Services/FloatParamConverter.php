@@ -1,11 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
+namespace Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
+use Mediagone\Symfony\PowerPack\Converters\Primitives\FloatParam;
 use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
 
 
-final class BoolParamConverter extends ValueParamConverter
+final class FloatParamConverter extends ValueParamConverter
 {
     //========================================================================================================
     // Constructor
@@ -15,11 +16,11 @@ final class BoolParamConverter extends ValueParamConverter
     {
         $handlers = [
             '' => static function(string $value) {
-                return BoolParam::fromInteger((int)$value);
+                return FloatParam::fromFloat((float)$value);
             },
         ];
         
-        parent::__construct(BoolParam::class, $handlers);
+        parent::__construct(FloatParam::class, $handlers);
     }
     
     

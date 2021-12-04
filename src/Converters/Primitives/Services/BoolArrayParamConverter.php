@@ -1,12 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
+namespace Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
+use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolArrayParam;
 use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 final class BoolArrayParamConverter extends ValueParamConverter

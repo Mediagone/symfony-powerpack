@@ -3,7 +3,7 @@
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\JsonParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\JsonParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\JsonParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

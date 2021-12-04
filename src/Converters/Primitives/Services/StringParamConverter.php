@@ -1,11 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
+namespace Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
+use Mediagone\Symfony\PowerPack\Converters\Primitives\StringParam;
 use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
 
 
-final class StringArrayParamConverter extends ValueParamConverter
+final class StringParamConverter extends ValueParamConverter
 {
     //========================================================================================================
     // Constructor
@@ -15,11 +16,11 @@ final class StringArrayParamConverter extends ValueParamConverter
     {
         $handlers = [
             '' => static function(string $value) {
-                return StringArrayParam::fromComaSeparatedStrings($value);
+                return StringParam::fromString($value);
             },
         ];
         
-        parent::__construct(StringArrayParam::class, $handlers);
+        parent::__construct(StringParam::class, $handlers);
     }
     
     
