@@ -22,17 +22,20 @@ abstract class ValueParamConverter implements ParamConverterInterface
     
     private bool $catchExceptions;
     
+    private bool $throwOnMissingParam;
+    
     
     
     //========================================================================================================
     // Constructor
     //========================================================================================================
     
-    protected function __construct(string $className, array $resolvers, bool $catchThrowable = true)
+    protected function __construct(string $className, array $resolvers, bool $catchThrowable = true, bool $throwOnMissingParam = false)
     {
         $this->className = $className;
         $this->resolvers = (static fn(callable ...$resolvers) => $resolvers)(...$resolvers);
         $this->catchExceptions = $catchThrowable;
+        $this->throwOnMissingParam = $throwOnMissingParam;
     }
     
     
@@ -76,7 +79,11 @@ abstract class ValueParamConverter implements ParamConverterInterface
         if ($param === null && $configuration->isOptional() === false) {
             $shortClassName = (new ReflectionClass($this->className))->getShortName();
             
-            throw new NotFoundHttpException("$shortClassName not found (invalid or missing '$$paramName' parameter).");
+            if ($this->throwOnMissingParam) {
+                throw new NotFoundHttpException("$shortClassName not found (invalid or missing '$$paramName' parameter).");
+            }
+            
+            return false;
         }
         
         $request->attributes->set($configuration->getName(), $param);
