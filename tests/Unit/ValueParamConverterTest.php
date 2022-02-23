@@ -136,38 +136,6 @@ final class ValueParamConverterTest extends TestCase
     }
     
     
-    public function test_throws_by_default_when_a_required_parameter_is_missing(): void
-    {
-        $request = new Request();
-        
-        $paramName = 'foo';
-        $param = new ParamConverter(
-            ['name' => $paramName],
-            FooParam::class,
-            []
-        );
-        
-        $this->expectException(NotFoundHttpException::class);
-        (new FooParamConverter())->apply($request, $param);
-    }
-    
-    
-    public function test_missing_parameter_exception_can_be_suppressed(): void
-    {
-        $request = new Request();
-        
-        $paramName = 'foo';
-        $param = new ParamConverter(
-            ['name' => $paramName],
-            FooParam::class,
-            ['throwNotFoundOnMissingParam' => false]
-        );
-        
-        $result = (new FooParamConverter())->apply($request, $param);
-        self::assertFalse($result);
-    }
-    
-    
     public function test_is_not_catching_resolver_exceptions_by_default(): void
     {
         $paramName = 'foo';

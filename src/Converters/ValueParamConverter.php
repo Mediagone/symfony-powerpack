@@ -2,11 +2,9 @@
 
 namespace Mediagone\Symfony\PowerPack\Converters;
 
-use ReflectionClass;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 
@@ -74,13 +72,6 @@ abstract class ValueParamConverter implements ParamConverterInterface
         }
         
         if ($param === null && $configuration->isOptional() === false) {
-            $shortClassName = (new ReflectionClass($this->className))->getShortName();
-            
-            $throwIfMissing = $options['throwNotFoundOnMissingParam'] ?? true;
-            if ($throwIfMissing) {
-                throw new NotFoundHttpException("$shortClassName not found (invalid or missing '$$paramName' parameter).");
-            }
-            
             return false;
         }
         

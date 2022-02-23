@@ -90,36 +90,5 @@ final class StringParamConverterTest extends TestCase
     }
     
     
-    public function test_throws_when_missing_parameter_is_required(): void
-    {
-        $request = new Request();
-        
-        $paramName = 'foo';
-        $param = new ParamConverter(
-            ['name' => $paramName],
-            StringParam::class,
-            ['throwNotFoundOnMissingParam' => true]
-        );
-        
-        $this->expectException(NotFoundHttpException::class);
-        (new StringParamConverter())->apply($request, $param);
-    }
-    
-    
-    // public function test_returns_null_when_catching_exceptions(): void
-    // {
-    //     $paramName = 'foo';
-    //     $request = new Request(
-    //         [$paramName.'Error' => '']
-    //     );
-    //    
-    //     $param = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
-    //     (new StringParamConverter())->apply($request, $param);
-    //    
-    //     $convertedParam = $request->attributes->get($paramName);
-    //     self::assertNull($convertedParam);
-    // }
-    
-    
     
 }

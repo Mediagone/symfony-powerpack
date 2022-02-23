@@ -90,21 +90,5 @@ final class BoolParamConverterTest extends TestCase
     }
     
     
-    public function test_throws_when_missing_parameter_is_required(): void
-    {
-        $request = new Request();
-        
-        $paramName = 'foo';
-        $param = new ParamConverter(
-            ['name' => $paramName],
-            BoolParam::class,
-            ['throwNotFoundOnMissingParam' => true]
-        );
-        
-        $this->expectException(NotFoundHttpException::class);
-        (new BoolParamConverter())->apply($request, $param);
-    }
-    
-    
     
 }
