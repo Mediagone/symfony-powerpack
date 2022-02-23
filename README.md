@@ -22,7 +22,7 @@ In order to use primitive type parameters in your controllers, you must register
 ```yaml
 services:
     
-    Mediagone\Symfony\PowerPack\Converters\Primitives\:
+    Mediagone\Symfony\PowerPack\Converters\Primitives\Services\:
         resource: '../vendor/mediagone/symfony-powerpack/src/Converters/Primitives/Services/'
 ```
 
