@@ -18,7 +18,7 @@ Add it as Composer dependency:
 composer require mediagone/symfony-powerpack
 ```
 
-In order to use primitive type parameters, you must register the converters in your `services.yaml` by adding the following service declaration:
+In order to use primitive type parameters in your controllers, you must register the converters in your `services.yaml` by adding the following service declaration:
 ```yaml
 services:
     
@@ -146,38 +146,45 @@ final class ShowUserController
 
 ### Optional parameters
 
-In the previous example, the converter will throw a `NotFoundHttpException` exception if no User is retrieved. \
-You can disable this behavior by making the argument nullable and handle it by yourself:
+If you need to allow a nullable argument, just make the argument nullable and handle it in your code (eg. to return a custom response):
 
 ```php
 public function __invoke(?User $user): Response
 {
     if ($user === null) {
-        // ...
+        // do something...
     }
 }
 ```
+
 
 ### Exception handling
 
-By default, all converters catch and return `null` if an exception is thrown by a resolver, but you can disable this automatic catching by passing `false` as third argument in ValueParamConverter's constructor.
+Exceptions can be thrown in your resolvers, for example if the supplied value is not valid. In some cases, you don't need to handle those errors and you can just consider them as missing values.
 
+You can either:
+- Catch exceptions directly in the resolver, to customize the return value by yourself.
+- Enable the `convertResolverExceptionsToNull` option on your controller's action, to automatically handle errors and convert the parameter value to `null`.
+
+Example:
 ```php
-use Mediagone\Symfony\PowerPack\Converters\Primitives\StringParam;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Routing\Annotation\Route;
 
-final class StringParamConverter extends ValueParamConverter
+/**
+ * @Route('/search/{name}')
+ * @ParamConverter("name", options={"convertResolverExceptionsToNull": true}) 
+ */
+public function __invoke(?LowercaseString $name): Response
 {
-    public function __construct()
-    {
-        // ...
-        
-        parent::__construct(LowercaseString::class, $resolvers, false); // disable exception handling
+    if ($name === null) {
+        throw new InvalidArgumentException('Invalid or missing value for `$name` parameter.');
     }
     
+    ...
 }
 ```
-You can also catch exceptions directly in the resolver if you need to customize the return value.
+
 
 
 ## <a name="primitiveParameters"></a>2) Primitive types parameters
