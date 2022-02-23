@@ -165,7 +165,7 @@ final class ValueParamConverterTest extends TestCase
         $param = new ParamConverter(
             ['name' => $paramName],
             FooParam::class,
-            ['catchResolverExceptions' => false],
+            ['convertResolverExceptionsToNull' => false],
             true
         );
         
@@ -184,7 +184,7 @@ final class ValueParamConverterTest extends TestCase
         $param = new ParamConverter(
             ['name' => $paramName],
             FooParam::class,
-            ['catchResolverExceptions' => true],
+            ['convertResolverExceptionsToNull' => true],
             true
         );
         $result = (new FooParamConverter())->apply($request, $param);

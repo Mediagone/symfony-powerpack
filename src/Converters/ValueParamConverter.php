@@ -53,8 +53,8 @@ abstract class ValueParamConverter implements ParamConverterInterface
             $requestParam = $request->get($paramName.$resolverKey);
             
             if ($requestParam !== null) {
-                $catchResolverExceptions = $options['catchResolverExceptions'] ?? false;
-                if ($catchResolverExceptions) {
+                $convertResolverExceptionsToNull = $options['convertResolverExceptionsToNull'] ?? false;
+                if ($convertResolverExceptionsToNull) {
                     try {
                         $param = $resolver($requestParam);
                     } catch (Throwable $ex) {
