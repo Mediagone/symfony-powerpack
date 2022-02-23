@@ -41,8 +41,12 @@ final class ValueParamConverterTest extends TestCase
             [$paramName.'Id' => 'found'] // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class);
-        (new FooParamConverter())->apply($request, $param);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FooParam::class, $convertedParam);
@@ -58,8 +62,12 @@ final class ValueParamConverterTest extends TestCase
             [$paramName.'Id' => 'found'] // POST parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class);
-        (new FooParamConverter())->apply($request, $param);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FooParam::class, $convertedParam);
@@ -76,8 +84,12 @@ final class ValueParamConverterTest extends TestCase
             [$paramName.'Id' => 'found'] // Attributes
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class);
-        (new FooParamConverter())->apply($request, $param);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FooParam::class, $convertedParam);
@@ -92,8 +104,12 @@ final class ValueParamConverterTest extends TestCase
             [$paramName.'Name' => 'found'], // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class);
-        (new FooParamConverter())->apply($request, $param);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FooParam::class, $convertedParam);
@@ -106,49 +122,105 @@ final class ValueParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], FooParam::class, [], true);
-        (new FooParamConverter())->apply($request, $param);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            [],
+            true
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);
     }
     
     
-    public function test_throws_when_missing_parameter_is_required(): void
+    public function test_throws_by_default_when_a_required_parameter_is_missing(): void
     {
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], FooParam::class, []);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            []
+        );
         
         $this->expectException(NotFoundHttpException::class);
         (new FooParamConverter())->apply($request, $param);
     }
     
     
-    public function test_is_not_catching_exceptions_by_default(): void
+    public function test_missing_parameter_exception_can_be_suppressed(): void
     {
+        $request = new Request();
+        
         $paramName = 'foo';
-        $request = new Request(
-            [$paramName.'Error' => '']
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            ['throwNotFoundOnMissingParam' => false]
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class, [], true);
-        
-        $this->expectException(InvalidArgumentException::class);
-        (new FooParamConverter(false))->apply($request, $param);
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertFalse($result);
     }
     
     
-    public function test_returns_null_when_catching_exceptions(): void
+    public function test_is_not_catching_resolver_exceptions_by_default(): void
+    {
+        $paramName = 'foo';
+        $request = new Request(
+            [$paramName.'Error' => ''] //todo?
+        );
+        
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            [],
+            true
+        );
+        
+        $this->expectException(InvalidArgumentException::class);
+        (new FooParamConverter())->apply($request, $param);
+    }
+    
+    
+    public function test_returns_null_when_catching_resolver_exceptions_suppressed(): void
     {
         $paramName = 'foo';
         $request = new Request(
             [$paramName.'Error' => '']
         );
         
-        $param = new ParamConverter(['name' => $paramName], FooParam::class, [], true);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            ['catchResolverExceptions' => false],
+            true
+        );
+        
+        $this->expectException(InvalidArgumentException::class);
         (new FooParamConverter())->apply($request, $param);
+    }
+    
+    
+    public function test_returns_null_when_catching_resolver_exceptions(): void
+    {
+        $paramName = 'foo';
+        $request = new Request(
+            [$paramName.'Error' => '']
+        );
+        
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FooParam::class,
+            ['catchResolverExceptions' => true],
+            true
+        );
+        $result = (new FooParamConverter())->apply($request, $param);
+        self::assertTrue($result);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);

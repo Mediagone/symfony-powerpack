@@ -8,7 +8,7 @@ use Mediagone\Symfony\PowerPack\Converters\ValueParamConverter;
 
 final class FooParamConverter extends ValueParamConverter
 {
-    public function __construct(bool $catchThrowable = true)
+    public function __construct()
     {
         $resolvers = [
             'Id' => static function(string $value) {
@@ -22,6 +22,6 @@ final class FooParamConverter extends ValueParamConverter
             }
         ];
         
-        parent::__construct(FooParam::class, $resolvers, $catchThrowable);
+        parent::__construct(FooParam::class, $resolvers);
     }
 }

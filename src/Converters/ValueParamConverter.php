@@ -20,22 +20,16 @@ abstract class ValueParamConverter implements ParamConverterInterface
     
     private array $resolvers;
     
-    private bool $catchExceptions;
-    
-    private bool $throwOnMissingParam;
-    
     
     
     //========================================================================================================
     // Constructor
     //========================================================================================================
     
-    protected function __construct(string $className, array $resolvers, bool $catchThrowable = true, bool $throwOnMissingParam = false)
+    protected function __construct(string $className, array $resolvers)
     {
         $this->className = $className;
         $this->resolvers = (static fn(callable ...$resolvers) => $resolvers)(...$resolvers);
-        $this->catchExceptions = $catchThrowable;
-        $this->throwOnMissingParam = $throwOnMissingParam;
     }
     
     
@@ -52,14 +46,17 @@ abstract class ValueParamConverter implements ParamConverterInterface
     
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $paramName = $configuration->getName();
         $param = null;
+        $paramName = $configuration->getName();
+        
+        $options = $configuration->getOptions();
         
         foreach ($this->resolvers as $resolverKey => $resolver) {
             $requestParam = $request->get($paramName.$resolverKey);
             
             if ($requestParam !== null) {
-                if ($this->catchExceptions) {
+                $catchResolverExceptions = $options['catchResolverExceptions'] ?? false;
+                if ($catchResolverExceptions) {
                     try {
                         $param = $resolver($requestParam);
                     } catch (Throwable $ex) {
@@ -79,7 +76,8 @@ abstract class ValueParamConverter implements ParamConverterInterface
         if ($param === null && $configuration->isOptional() === false) {
             $shortClassName = (new ReflectionClass($this->className))->getShortName();
             
-            if ($this->throwOnMissingParam) {
+            $throwIfMissing = $options['throwNotFoundOnMissingParam'] ?? true;
+            if ($throwIfMissing) {
                 throw new NotFoundHttpException("$shortClassName not found (invalid or missing '$$paramName' parameter).");
             }
             

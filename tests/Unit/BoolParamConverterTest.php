@@ -95,7 +95,11 @@ final class BoolParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], BoolParam::class, []);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            BoolParam::class,
+            ['throwNotFoundOnMissingParam' => true]
+        );
         
         $this->expectException(NotFoundHttpException::class);
         (new BoolParamConverter())->apply($request, $param);

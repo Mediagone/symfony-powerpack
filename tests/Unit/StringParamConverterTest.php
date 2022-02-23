@@ -95,7 +95,11 @@ final class StringParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], StringParam::class, []);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            StringParam::class,
+            ['throwNotFoundOnMissingParam' => true]
+        );
         
         $this->expectException(NotFoundHttpException::class);
         (new StringParamConverter())->apply($request, $param);

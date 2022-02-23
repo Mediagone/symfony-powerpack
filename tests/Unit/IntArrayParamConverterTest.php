@@ -93,10 +93,14 @@ final class IntArrayParamConverterTest extends TestCase
     public function test_throws_when_missing_parameter_is_required(): void
     {
         $request = new Request();
-       
+        
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class, []);
-       
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            IntArrayParam::class,
+            ['throwNotFoundOnMissingParam' => true]
+        );
+        
         $this->expectException(NotFoundHttpException::class);
         (new IntArrayParamConverter())->apply($request, $param);
     }

@@ -95,7 +95,11 @@ final class IntParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], IntParam::class, []);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            IntParam::class,
+            ['throwNotFoundOnMissingParam' => true]
+        );
         
         $this->expectException(NotFoundHttpException::class);
         (new IntParamConverter())->apply($request, $param);

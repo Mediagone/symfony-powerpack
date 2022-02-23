@@ -95,7 +95,10 @@ final class FloatParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], FloatParam::class, []);
+        $param = new ParamConverter(
+            ['name' => $paramName],
+            FloatParam::class,
+            ['throwNotFoundOnMissingParam' => true]);
         
         $this->expectException(NotFoundHttpException::class);
         (new FloatParamConverter())->apply($request, $param);
