@@ -163,28 +163,29 @@ public function __invoke(?User $user): Response
 Exceptions can be thrown in your resolvers, for example if the supplied value is not valid. In some cases, you don't need to handle those errors and you can just consider them as missing values.
 
 You can either:
-- Catch exceptions directly in the resolver, to customize the return value by yourself.
 - Enable the `convertResolverExceptionsToNull` option on your controller's action, to automatically handle errors and convert the parameter value to `null`.
+- Catch exceptions directly in the resolver, and customize the return value by yourself.
 
-Example:
+Example of `@ParamConverter` usage:
 ```php
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route('/search/{name}')
- * @ParamConverter("name", options={"convertResolverExceptionsToNull": true}) 
+ * @Route('/api/search/{name}')
+ * @ParamConverter("name", options={"convertResolverExceptionsToNull": true})
  */
 public function __invoke(?LowercaseString $name): Response
 {
     if ($name === null) {
-        throw new InvalidArgumentException('Invalid or missing value for `$name` parameter.');
+        return new JsonResponse(['error' => 'Invalid or missing value for `$name` parameter.']);
     }
     
     ...
 }
 ```
 
+_Note: don't forget to make your method's argument nullable!_
 
 
 ## <a name="primitiveParameters"></a>2) Primitive types parameters
