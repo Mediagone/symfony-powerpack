@@ -51,6 +51,10 @@ abstract class ValueParamConverter implements ParamConverterInterface
         
         foreach ($this->resolvers as $resolverKey => $resolver) {
             $requestParam = $request->get($paramName.$resolverKey);
+            if ($requestParam === null && $request->getContentType() === 'json') {
+                $params = $request->toArray();
+                $requestParam = $params[$paramName.$resolverKey] ?? null;
+            }
             
             if ($requestParam !== null) {
                 $convertResolverExceptionsToNull = $options['convertResolverExceptionsToNull'] ?? false;
