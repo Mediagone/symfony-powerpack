@@ -7,7 +7,6 @@ use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\IntParamConverter
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
@@ -26,11 +25,25 @@ final class IntParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield ['', 0];
+        yield ['123', 123];
+        yield [' 123', 123];
+        yield ['123 ', 123];
+        yield ['12.34', 12];
+        yield [true, 1];
+        yield [false, 0];
+    }
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => '123'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], IntParam::class);
@@ -38,16 +51,19 @@ final class IntParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(IntParam::class, $convertedParam);
-        self::assertSame(123, $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
-    public function test_can_convert_from_POST(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_POST($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
-            [$paramName => '123'] // POST parameters
+            [$paramName => $value] // POST parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], IntParam::class);
@@ -55,17 +71,20 @@ final class IntParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(IntParam::class, $convertedParam);
-        self::assertSame(123, $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
-    public function test_can_convert_from_attribute(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_attribute($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
             [], // POST parameters
-            [$paramName => '123'] // Attributes
+            [$paramName => $value] // Attributes
         );
         
         $param = new ParamConverter(['name' => $paramName], IntParam::class);
@@ -73,7 +92,7 @@ final class IntParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(IntParam::class, $convertedParam);
-        self::assertSame(123, $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
