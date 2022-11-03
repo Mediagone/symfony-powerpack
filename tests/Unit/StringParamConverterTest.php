@@ -7,7 +7,6 @@ use Mediagone\Symfony\PowerPack\Converters\Primitives\StringParam;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
@@ -26,11 +25,25 @@ final class StringParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield ['', ''];
+        yield [1, '1'];
+        yield [true, '1'];
+        yield [1.2345, '1.2345'];
+        yield ['Hello ', 'Hello '];
+        yield ['Hello :)', 'Hello :)'];
+    }
+    
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, string $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => 'A GET string'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], StringParam::class);
@@ -38,16 +51,19 @@ final class StringParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
-        self::assertSame('A GET string', $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
-    public function test_can_convert_from_POST(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_POST($value, string $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
-            [$paramName => 'A POST string'] // POST parameters
+            [$paramName => $value] // POST parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], StringParam::class);
@@ -55,17 +71,20 @@ final class StringParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
-        self::assertSame('A POST string', $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
-    public function test_can_convert_from_attribute(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_attribute($value, string $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
             [], // POST parameters
-            [$paramName => 'An attribute string'] // Attributes
+            [$paramName => $value] // Attributes
         );
         
         $param = new ParamConverter(['name' => $paramName], StringParam::class);
@@ -73,7 +92,7 @@ final class StringParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringParam::class, $convertedParam);
-        self::assertSame('An attribute string', $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     

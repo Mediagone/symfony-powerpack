@@ -15,8 +15,8 @@ final class StringParamConverter extends ValueParamConverter
     public function __construct()
     {
         $resolvers = [
-            '' => static function(string $value) {
-                return StringParam::fromString($value);
+            '' => static function($value) {
+                return StringParam::fromString((string)$value);
             },
         ];
         
