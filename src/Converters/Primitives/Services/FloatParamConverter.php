@@ -15,7 +15,7 @@ final class FloatParamConverter extends ValueParamConverter
     public function __construct()
     {
         $resolvers = [
-            '' => static function(string $value) {
+            '' => static function($value) {
                 return FloatParam::fromFloat((float)$value);
             },
         ];
