@@ -26,7 +26,7 @@ final class JsonParamConverter implements ParamConverterInterface
         $paramName = $configuration->getName();
         
         if ($request->get($paramName)) {
-            $param = JsonParam::fromString($request->get($paramName));
+            $param = JsonParam::fromString((string)$request->get($paramName));
         }
         else {
             $param = null;
