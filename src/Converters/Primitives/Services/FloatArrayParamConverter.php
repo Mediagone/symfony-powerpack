@@ -15,8 +15,8 @@ final class FloatArrayParamConverter extends ValueParamConverter
     public function __construct()
     {
         $resolvers = [
-            '' => static function(string $value) {
-                return FloatArrayParam::fromComaSeparatedFloats($value);
+            '' => static function($value) {
+                return FloatArrayParam::fromComaSeparatedFloats((string)$value);
             },
         ];
         

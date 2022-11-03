@@ -26,11 +26,23 @@ final class FloatArrayParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield ['', []];
+        yield [' ', []];
+        yield ['1.2,3.4,5.6', [1.2, 3.4, 5.6]];
+        yield ['1,2.3,4,5.6', [1., 2.3, 4., 5.6]];
+        yield ['1.2, 3.4 ,5.6', [1.2, 3.4, 5.6]];
+    }
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => '1.2,3.4,5.6'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
@@ -38,16 +50,19 @@ final class FloatArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
-        self::assertSame([1.2,3.4,5.6], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
-    public function test_can_convert_from_POST(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_POST($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
-            [$paramName => '1.2,3.4,5.6'] // POST parameters
+            [$paramName => $value] // POST parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
@@ -55,17 +70,19 @@ final class FloatArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
-        self::assertSame([1.2,3.4,5.6], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
-    
-    public function test_can_convert_from_attribute(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_attribute($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
             [], // POST parameters
-            [$paramName => '1.2,3.4,5.6'] // Attributes
+            [$paramName => $value] // Attributes
         );
         
         $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
@@ -73,7 +90,7 @@ final class FloatArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
-        self::assertSame([1.2,3.4,5.6], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
