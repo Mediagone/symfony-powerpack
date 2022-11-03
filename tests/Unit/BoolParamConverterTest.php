@@ -7,7 +7,6 @@ use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\BoolParamConverte
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
@@ -26,11 +25,26 @@ final class BoolParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield [true, true];
+        yield [1, true];
+        yield [0, false];
+        yield [1.234, true];
+        yield [0.0, false];
+        yield ['1', true];
+        yield ['', false];
+    }
+    
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, bool $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => '1'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], BoolParam::class);
@@ -38,16 +52,26 @@ final class BoolParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(BoolParam::class, $convertedParam);
-        self::assertTrue($convertedParam->isTrue());
+        if ($converted) {
+            self::assertTrue($convertedParam->isTrue());
+            self::assertFalse($convertedParam->isFalse());
+        }
+        else {
+            self::assertFalse($convertedParam->isTrue());
+            self::assertTrue($convertedParam->isFalse());
+        }
     }
     
     
-    public function test_can_convert_from_POST(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_POST($value, bool $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
-            [$paramName => '1'] // POST parameters
+            [$paramName => $value] // POST parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], BoolParam::class);
@@ -55,17 +79,27 @@ final class BoolParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(BoolParam::class, $convertedParam);
-        self::assertTrue($convertedParam->isTrue());
+        if ($converted) {
+            self::assertTrue($convertedParam->isTrue());
+            self::assertFalse($convertedParam->isFalse());
+        }
+        else {
+            self::assertFalse($convertedParam->isTrue());
+            self::assertTrue($convertedParam->isFalse());
+        }
     }
     
     
-    public function test_can_convert_from_attribute(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_attribute($value, bool $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
             [], // POST parameters
-            [$paramName => '1'] // Attributes
+            [$paramName => $value] // Attributes
         );
         
         $param = new ParamConverter(['name' => $paramName], BoolParam::class);
@@ -73,7 +107,14 @@ final class BoolParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(BoolParam::class, $convertedParam);
-        self::assertTrue($convertedParam->isTrue());
+        if ($converted) {
+            self::assertTrue($convertedParam->isTrue());
+            self::assertFalse($convertedParam->isFalse());
+        }
+        else {
+            self::assertFalse($convertedParam->isTrue());
+            self::assertTrue($convertedParam->isFalse());
+        }
     }
     
     
