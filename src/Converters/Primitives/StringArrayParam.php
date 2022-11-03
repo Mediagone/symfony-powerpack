@@ -2,9 +2,12 @@
 
 namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
 
+use InvalidArgumentException;
 use JsonSerializable;
+use function array_map;
 use function explode;
 use function in_array;
+use function trim;
 
 
 final class StringArrayParam implements JsonSerializable
@@ -45,6 +48,10 @@ final class StringArrayParam implements JsonSerializable
     
     public static function fromComaSeparatedStrings(string $value) : self
     {
+        if ($value === '') {
+            return new self([]);
+        }
+        
         return new self(explode(',', $value));
     }
     

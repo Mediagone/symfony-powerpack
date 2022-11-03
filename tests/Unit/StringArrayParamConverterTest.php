@@ -7,7 +7,6 @@ use Mediagone\Symfony\PowerPack\Converters\Primitives\StringArrayParam;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
@@ -26,11 +25,26 @@ final class StringArrayParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield ['', []];
+        yield [' ', [' ']];
+        yield [',a,b', ['', 'a', 'b']];
+        yield ['a,,b', ['a', '', 'b']];
+        yield ['a,b,', ['a', 'b', '']];
+        yield ['1,2,3', ['1', '2', '3']];
+        yield ['a,b,c', ['a', 'b', 'c']];
+        yield [' a , b , c ', [' a ', ' b ', ' c ']];
+    }
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => '1,2,3'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
@@ -38,16 +52,18 @@ final class StringArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringArrayParam::class, $convertedParam);
-        self::assertSame(['1','2','3'], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
-    
-    public function test_can_convert_from_POST(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_POST($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
-            [$paramName => '1,2,3'] // POST parameters
+            [$paramName => $value] // POST parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
@@ -55,17 +71,19 @@ final class StringArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringArrayParam::class, $convertedParam);
-        self::assertSame(['1','2','3'], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
-    
-    public function test_can_convert_from_attribute(): void
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_attribute($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [], // GET parameters
             [], // POST parameters
-            [$paramName => '1,2,3'] // Attributes
+            [$paramName => $value] // Attributes
         );
         
         $param = new ParamConverter(['name' => $paramName], StringArrayParam::class);
@@ -73,7 +91,7 @@ final class StringArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(StringArrayParam::class, $convertedParam);
-        self::assertSame(['1','2','3'], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     

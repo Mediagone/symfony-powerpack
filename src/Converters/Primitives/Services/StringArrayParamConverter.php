@@ -15,8 +15,8 @@ final class StringArrayParamConverter extends ValueParamConverter
     public function __construct()
     {
         $resolvers = [
-            '' => static function(string $value) {
-                return StringArrayParam::fromComaSeparatedStrings($value);
+            '' => static function($value) {
+                return StringArrayParam::fromComaSeparatedStrings((string)$value);
             },
         ];
         
