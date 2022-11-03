@@ -2,6 +2,7 @@
 
 namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
 
+use InvalidArgumentException;
 use JsonSerializable;
 use function array_map;
 use function explode;
@@ -46,11 +47,20 @@ final class BoolArrayParam implements JsonSerializable
     
     public static function fromComaSeparatedBooleans(string $value) : self
     {
+        $value = trim($value);
+        if ($value === '') {
+            return new self([]);
+        }
+        
+        $values = array_map(static fn(string $s) => trim($s), explode(',', $value));
+        foreach ($values as $val) {
+            if ($val === '') {
+                throw new InvalidArgumentException("Invalid coma separated booleans string ($value)");
+            }
+        }
+        
         return new self(
-            array_map(
-                static fn(string $value) => (bool)$value,
-                explode(',', $value)
-            )
+            array_map(static fn(string $value) => (bool)$value, $values)
         );
     }
     

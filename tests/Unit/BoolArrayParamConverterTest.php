@@ -2,12 +2,12 @@
 
 namespace Tests\Mediagone\Symfony\PowerPack\Unit;
 
+use InvalidArgumentException;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolArrayParam;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\BoolArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
@@ -26,11 +26,26 @@ final class BoolArrayParamConverterTest extends TestCase
     }
     
     
-    public function test_can_convert_from_GET(): void
+    public function validValuesProvider() : iterable
+    {
+        yield ['', []];
+        yield ['1', [true]];
+        yield ['1,0', [true, false]];
+        yield ['1,0,1', [true, false, true]];
+        yield [' 1 , 0 , 1 ', [true, false, true]];
+        yield ['true,false', [true, true]];
+        yield ['true,1.234', [true, true]];
+        yield ['true,0', [true, false]];
+    }
+    
+    /**
+     * @dataProvider validValuesProvider
+     */
+    public function test_can_convert_from_GET($value, array $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
-            [$paramName => '1,0,1'] // GET parameters
+            [$paramName => $value] // GET parameters
         );
         
         $param = new ParamConverter(['name' => $paramName], BoolArrayParam::class);
@@ -38,7 +53,7 @@ final class BoolArrayParamConverterTest extends TestCase
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(BoolArrayParam::class, $convertedParam);
-        self::assertSame([true,false,true], $convertedParam->getValue());
+        self::assertSame($converted, $convertedParam->getValue());
     }
     
     
@@ -74,6 +89,34 @@ final class BoolArrayParamConverterTest extends TestCase
         $convertedParam = $request->attributes->get($paramName);
         self::assertInstanceOf(BoolArrayParam::class, $convertedParam);
         self::assertSame([true,false,true], $convertedParam->getValue());
+    }
+    
+    
+    public function invalidValuesProvider() : iterable
+    {
+        yield [','];
+        yield ['1,'];
+        yield [',1'];
+        yield ['1,,1'];
+        yield ['1, ,1'];
+        yield ['1,2,'];
+        yield [',1,2'];
+        yield ['1,2, '];
+        yield [' ,1,2'];
+    }
+    
+    /**
+     * @dataProvider invalidValuesProvider
+     */
+    public function test_throws_on_invalid_string($value): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        
+        $paramName = 'foo';
+        $request = new Request([$paramName => $value]);
+        
+        $param = new ParamConverter(['name' => $paramName], BoolArrayParam::class);
+        (new BoolArrayParamConverter())->apply($request, $param);
     }
     
     

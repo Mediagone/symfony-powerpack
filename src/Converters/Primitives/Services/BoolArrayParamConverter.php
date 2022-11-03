@@ -15,8 +15,8 @@ final class BoolArrayParamConverter extends ValueParamConverter
     public function __construct()
     {
         $resolvers = [
-            '' => static function(string $value) {
-                return BoolArrayParam::fromComaSeparatedBooleans($value);
+            '' => static function($value) {
+                return BoolArrayParam::fromComaSeparatedBooleans((string)$value);
             },
         ];
         
