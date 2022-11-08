@@ -1,28 +1,27 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
-use Mediagone\Symfony\PowerPack\Converters\Primitives\FloatArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\FloatArrayParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\IntArrayParam;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\IntArrayParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
 /**
- * @covers FloatArrayParamConverter
+ * @covers IntArrayParamConverter
  */
-final class FloatArrayParamConverterTest extends TestCase
+final class IntArrayParamConverterTest extends TestCase
 {
-    public function test_only_supports_FloatArrayParam(): void
+    public function test_only_supports_IntArrayParam(): void
     {
-        $floatArrayParam = new ParamConverter([], FloatArrayParam::class);
+        $intArrayParam = new ParamConverter([], IntArrayParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
         
-        self::assertTrue((new FloatArrayParamConverter())->supports($floatArrayParam));
-        self::assertFalse((new FloatArrayParamConverter())->supports($fooParam));
+        self::assertTrue((new IntArrayParamConverter())->supports($intArrayParam));
+        self::assertFalse((new IntArrayParamConverter())->supports($fooParam));
     }
     
     
@@ -30,9 +29,9 @@ final class FloatArrayParamConverterTest extends TestCase
     {
         yield ['', []];
         yield [' ', []];
-        yield ['1.2,3.4,5.6', [1.2, 3.4, 5.6]];
-        yield ['1,2.3,4,5.6', [1., 2.3, 4., 5.6]];
-        yield ['1.2, 3.4 ,5.6', [1.2, 3.4, 5.6]];
+        yield ['1,2,3', [1, 2, 3]];
+        yield ['1.234,2,3', [1, 2, 3]];
+        yield ['1, 2 ,3', [1, 2, 3]];
     }
     
     /**
@@ -45,11 +44,11 @@ final class FloatArrayParamConverterTest extends TestCase
             [$paramName => $value] // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
-        (new FloatArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
+        (new IntArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
+        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -65,13 +64,14 @@ final class FloatArrayParamConverterTest extends TestCase
             [$paramName => $value] // POST parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
-        (new FloatArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
+        (new IntArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
+        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
+    
     
     /**
      * @dataProvider validValuesProvider
@@ -85,11 +85,11 @@ final class FloatArrayParamConverterTest extends TestCase
             [$paramName => $value] // Attributes
         );
         
-        $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class);
-        (new FloatArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
+        (new IntArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(FloatArrayParam::class, $convertedParam);
+        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -99,8 +99,8 @@ final class FloatArrayParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], FloatArrayParam::class, [], true);
-        (new FloatArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class, [], true);
+        (new IntArrayParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);

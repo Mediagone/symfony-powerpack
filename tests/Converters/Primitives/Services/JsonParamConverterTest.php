@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\JsonParam;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\JsonParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 

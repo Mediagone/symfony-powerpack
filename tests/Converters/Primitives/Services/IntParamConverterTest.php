@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
-use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\StringParamConverter;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\StringParam;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\IntParam;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\IntParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,46 +11,46 @@ use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
 /**
- * @covers StringParamConverter
+ * @covers IntParamConverter
  */
-final class StringParamConverterTest extends TestCase
+final class IntParamConverterTest extends TestCase
 {
-    public function test_only_supports_StringParam(): void
+    public function test_only_supports_IntParam(): void
     {
-        $strParam = new ParamConverter([], StringParam::class);
+        $intParam = new ParamConverter([], IntParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
         
-        self::assertTrue((new StringParamConverter())->supports($strParam));
-        self::assertFalse((new StringParamConverter())->supports($fooParam));
+        self::assertTrue((new IntParamConverter())->supports($intParam));
+        self::assertFalse((new IntParamConverter())->supports($fooParam));
     }
     
     
     public function validValuesProvider() : iterable
     {
-        yield ['', ''];
-        yield [1, '1'];
-        yield [true, '1'];
-        yield [1.2345, '1.2345'];
-        yield ['Hello ', 'Hello '];
-        yield ['Hello :)', 'Hello :)'];
+        yield ['', 0];
+        yield ['123', 123];
+        yield [' 123', 123];
+        yield ['123 ', 123];
+        yield ['12.34', 12];
+        yield [true, 1];
+        yield [false, 0];
     }
-    
     
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_GET($value, string $converted): void
+    public function test_can_convert_from_GET($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [$paramName => $value] // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntParam::class);
+        (new IntParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(StringParam::class, $convertedParam);
+        self::assertInstanceOf(IntParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -58,7 +58,7 @@ final class StringParamConverterTest extends TestCase
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_POST($value, string $converted): void
+    public function test_can_convert_from_POST($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
@@ -66,11 +66,11 @@ final class StringParamConverterTest extends TestCase
             [$paramName => $value] // POST parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntParam::class);
+        (new IntParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(StringParam::class, $convertedParam);
+        self::assertInstanceOf(IntParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -78,7 +78,7 @@ final class StringParamConverterTest extends TestCase
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_attribute($value, string $converted): void
+    public function test_can_convert_from_attribute($value, int $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
@@ -87,11 +87,11 @@ final class StringParamConverterTest extends TestCase
             [$paramName => $value] // Attributes
         );
         
-        $param = new ParamConverter(['name' => $paramName], StringParam::class);
-        (new StringParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntParam::class);
+        (new IntParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(StringParam::class, $convertedParam);
+        self::assertInstanceOf(IntParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -101,8 +101,8 @@ final class StringParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], StringParam::class, [], true);
-        (new StringParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], IntParam::class, [], true);
+        (new IntParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);

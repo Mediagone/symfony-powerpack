@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
 use InvalidArgumentException;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolArrayParam;

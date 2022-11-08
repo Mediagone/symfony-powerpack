@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
 use Mediagone\Symfony\PowerPack\Converters\Primitives\BoolParam;
 use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\BoolParamConverter;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Mediagone\Symfony\PowerPack\Unit;
+namespace Tests\Mediagone\Symfony\PowerPack\Converters\Primitives\Services;
 
-use Mediagone\Symfony\PowerPack\Converters\Primitives\IntArrayParam;
-use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\IntArrayParamConverter;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\FloatParam;
+use Mediagone\Symfony\PowerPack\Converters\Primitives\Services\FloatParamConverter;
 use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,44 +11,44 @@ use Tests\Mediagone\Symfony\PowerPack\FooParam;
 
 
 /**
- * @covers IntArrayParamConverter
+ * @covers FloatParamConverter
  */
-final class IntArrayParamConverterTest extends TestCase
+final class FloatParamConverterTest extends TestCase
 {
-    public function test_only_supports_IntArrayParam(): void
+    public function test_only_supports_FloatParam(): void
     {
-        $intArrayParam = new ParamConverter([], IntArrayParam::class);
+        $floatParam = new ParamConverter([], FloatParam::class);
         $fooParam = new ParamConverter([], FooParam::class);
         
-        self::assertTrue((new IntArrayParamConverter())->supports($intArrayParam));
-        self::assertFalse((new IntArrayParamConverter())->supports($fooParam));
+        self::assertTrue((new FloatParamConverter())->supports($floatParam));
+        self::assertFalse((new FloatParamConverter())->supports($fooParam));
     }
     
     
     public function validValuesProvider() : iterable
     {
-        yield ['', []];
-        yield [' ', []];
-        yield ['1,2,3', [1, 2, 3]];
-        yield ['1.234,2,3', [1, 2, 3]];
-        yield ['1, 2 ,3', [1, 2, 3]];
+        yield ['', 0.];
+        yield ['1', 1.];
+        yield ['12.34', 12.34];
+        yield [true, 1.];
+        yield [false, 0.];
     }
     
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_GET($value, array $converted): void
+    public function test_can_convert_from_GET($value, float $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
             [$paramName => $value] // GET parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
-        (new IntArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], FloatParam::class);
+        (new FloatParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
+        self::assertInstanceOf(FloatParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -56,7 +56,7 @@ final class IntArrayParamConverterTest extends TestCase
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_POST($value, array $converted): void
+    public function test_can_convert_from_POST($value, float $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
@@ -64,11 +64,11 @@ final class IntArrayParamConverterTest extends TestCase
             [$paramName => $value] // POST parameters
         );
         
-        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
-        (new IntArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], FloatParam::class);
+        (new FloatParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
+        self::assertInstanceOf(FloatParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -76,7 +76,7 @@ final class IntArrayParamConverterTest extends TestCase
     /**
      * @dataProvider validValuesProvider
      */
-    public function test_can_convert_from_attribute($value, array $converted): void
+    public function test_can_convert_from_attribute($value, float $converted): void
     {
         $paramName = 'foo';
         $request = new Request(
@@ -85,11 +85,11 @@ final class IntArrayParamConverterTest extends TestCase
             [$paramName => $value] // Attributes
         );
         
-        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class);
-        (new IntArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], FloatParam::class);
+        (new FloatParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
-        self::assertInstanceOf(IntArrayParam::class, $convertedParam);
+        self::assertInstanceOf(FloatParam::class, $convertedParam);
         self::assertSame($converted, $convertedParam->getValue());
     }
     
@@ -99,8 +99,8 @@ final class IntArrayParamConverterTest extends TestCase
         $request = new Request();
         
         $paramName = 'foo';
-        $param = new ParamConverter(['name' => $paramName], IntArrayParam::class, [], true);
-        (new IntArrayParamConverter())->apply($request, $param);
+        $param = new ParamConverter(['name' => $paramName], FloatParam::class, [], true);
+        (new FloatParamConverter())->apply($request, $param);
         
         $convertedParam = $request->attributes->get($paramName);
         self::assertNull($convertedParam);
