@@ -3,6 +3,8 @@
 namespace Mediagone\Symfony\PowerPack\Converters\Primitives;
 
 use JsonSerializable;
+use LogicException;
+use Mediagone\Symfony\PowerPack\NotImplementedException;
 use function json_decode;
 use function json_encode;
 
@@ -52,6 +54,26 @@ final class JsonParam implements JsonSerializable
     {
         return json_encode($this->value, JSON_THROW_ON_ERROR);
     }
+    
+    public function __isset(string $key) : bool
+    {
+        return isset($this->value->$key);
+    }
+    
+    public function __get(string $key)
+    {
+        if (! isset($this->value->$key)) {
+            throw new LogicException("The JSON data does not contain a '$key' key.");
+        }
+        
+        return $this->value->$key;
+    }
+    
+    public function __set(string $key, $value)
+    {
+        throw new NotImplementedException('JsonParam class is immutable, call to __set() method is not supported.');
+    }
+    
     
     
 }
