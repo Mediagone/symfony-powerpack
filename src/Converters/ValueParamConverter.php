@@ -42,7 +42,7 @@ abstract class ValueParamConverter implements ParamConverterInterface
     }
     
     
-    public function apply(Request $request, ParamConverter $configuration)
+    public function apply(Request $request, ParamConverter $configuration): bool
     {
         $param = null;
         $paramName = $configuration->getName();
