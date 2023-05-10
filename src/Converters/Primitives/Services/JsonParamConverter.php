@@ -21,7 +21,7 @@ final class JsonParamConverter implements ParamConverterInterface
     }
     
     
-    public function apply(Request $request, ParamConverter $configuration)
+    public function apply(Request $request, ParamConverter $configuration): bool
     {
         $paramName = $configuration->getName();
         
