@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Mediagone\Symfony\PowerPack\Types\Primitives\Resolvers;
 
-use;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
